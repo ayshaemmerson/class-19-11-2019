@@ -55,16 +55,36 @@ glimpse(raw)
 x <- raw %>%
   mutate(dvote = ifelse(response == "Dem", 1, 0)) %>%
   mutate(female = ifelse(gender == "Female", 1, 0)) %>%
-  select(dvote, female) 
+  select(dvote, female) %>%
 
 file.delete("master.zip", "2018-live-poll-results-master/")
+  
+  # Logistic regression
+  # what does 0.42 mean
+  # Women more likely then men to vote dem
+  # HOW CAN I use the model with new data?
+  
+my_data <- tibble(female = c(0,0,1))
 
+glm_obj <- glm(dvote ~ female, data = x, family = "binomial")
+
+predict(glm_obj, newdata = my_data, type = c("response"))
+
+# how to interpret 0.4?
+# probability that you vote dem if you are male
+# furst two numbers are the same therefore both male
+# How does number above (predicted values for new data) connect to the coefficient intercept
+# female 0.1042 is that amount more likely to vote dem
+# predict new data with new data 
+# if you are not female 40% chance of voting dem 
+# three numbers appear. 
+# add a prediction column to x
 
 x %>%
-  ggolot(x = dvote, y = female)
-  
+  mutate(prediction = predict(glm_obj, type = c("response")))
 
-  mutate(models = map(x, ~lm(dvote ~ female, data = .x)))
+# How to figure out which model is the best thing?
+
 
 ```
 
