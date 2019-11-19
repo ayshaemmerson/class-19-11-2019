@@ -84,6 +84,15 @@ x %>%
   mutate(prediction = predict(glm_obj, type = c("response")))
 
 # How to figure out which model is the best thing?
+# model fails totally with model one 
+
+x %>%
+  group_by(dvote) %>%
+  summarise(avg = mean(prediction))
+
+# same vlaue for prediction for dem and non dem 
+# most of time predicting low numbers
+# not a good model as numbers diverge 
 
 
 ```
