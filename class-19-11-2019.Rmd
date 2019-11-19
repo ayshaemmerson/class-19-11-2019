@@ -28,13 +28,15 @@ raw <- read_csv("2018-live-poll-results-master/data/elections-poll-az02-1.csv",
 
 my_list <- dir_ls("2018-live-poll-results-master/data/")
   
-raw <- map_dfr(my_list, read_csv, col_types = cols(.default = col_character(),
+raw <- map_dfr(my_list, .id = "source", read_csv, col_types = cols(.default = col_character(),
                                  turnout_scale = col_double(),
                                  turnout_score = col_double(),
                                  w_LV = col_double(),
                                  w_RV = col_double(),
                                  final_weight = col_double(),
                                  timestamp = col_datetime(format = "")))
+
+# first variable source which gives you each individual file 
 
 ```
 
@@ -44,6 +46,25 @@ raw <- map_dfr(my_list, read_csv, col_types = cols(.default = col_character(),
 # Create a 0/1 variable dvote for democratic vote 
 # Create a 0/1 variable female
 
+skim(raw)
+
+glimpse(raw)
+
+# Relationships with dvote and female 
+
+x <- raw %>%
+  mutate(dvote = ifelse(response == "Dem", 1, 0)) %>%
+  mutate(female = ifelse(gender == "Female", 1, 0)) %>%
+  select(dvote, female) 
+
+file.delete("master.zip", "2018-live-poll-results-master/")
+
+
+x %>%
+  ggolot(x = dvote, y = female)
+  
+
+  mutate(models = map(x, ~lm(dvote ~ female, data = .x)))
 
 ```
 
